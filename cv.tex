@@ -3,6 +3,10 @@
 % XeLaTeX Template
 % Version 1.0
 %
+% Removed A4, updated bibliography:
+% Brett Israelsen (bisraelsen.github.io)
+% https://github.com/bisraelsen/my_Frigerri_CV
+%
 % A4 version author:
 % Marvin Frommhold (depressiverobot.com)
 % https://github.com/depressiveRobot/friggeri-cv-a4
@@ -23,13 +27,13 @@
 % Options
 % 'print': remove colors from this template for printing
 % 'nocolor' to disable colors in section headers
-\documentclass[]{friggeri-cv-a4}
+\documentclass[nocolors]{friggeri-cv-a4}
 
 \addbibresource{bibliography.bib} % Specify the bibliography file to include publications
 
 \begin{document}
 
-\header{john}{smith}{junior business analyst} % Your name and current job title/field
+\header{brett}{smith}{junior business analyst} % Your name and current job title/field
 
 %----------------------------------------------------------------------------------------
 % SIDEBAR SECTION
@@ -207,25 +211,12 @@ Worked in the Nerd Herd and helped to solve computer problems by asking customer
 % PUBLICATIONS SECTION
 %----------------------------------------------------------------------------------------
 
-\section{publications}
-
-\printbibsection{article}{article in peer-reviewed journal} % Print all articles from the bibliography
-
-\printbibsection{book}{books} % Print all books from the bibliography
-
-\begin{refsection} % This is a custom heading for those references marked as "inproceedings" but not containing "keyword=france"
+% \section{publications}
+\printbibheading[heading=friggeriHeading,title=publications]
 \nocite{*}
-\printbibliography[sorting=chronological, type=inproceedings, title={international peer-reviewed conferences/proceedings}, notkeyword={france}, heading=bibheading]
-\end{refsection}
+\printbibliography[filter=articles,title={peer reviewed articles}, heading=friggeriSubHeading] % Print all articles from the bibliography
 
-\begin{refsection} % This is a custom heading for those references marked as "inproceedings" and containing "keyword=france"
-\nocite{*}
-\printbibliography[sorting=chronological, type=inproceedings, title={local peer-reviewed conferences/proceedings}, keyword={france}, heading=bibheading]
-\end{refsection}
-
-\printbibsection{misc}{other publications} % Print all miscellaneous entries from the bibliography
-
-\printbibsection{report}{research reports} % Print all research reports from the bibliography
+\printbibliography[filter=books,title={books}, heading=friggeriSubHeading, resetnumbers] % Print all books from the bibliography
 
 %----------------------------------------------------------------------------------------
 

@@ -10,8 +10,8 @@
 \LoadClass{article}
 
 % set A4 paper format
-\setlength\paperheight {297mm}
-\setlength\paperwidth  {210mm}
+% \setlength\paperheight {297mm}
+% \setlength\paperwidth  {210mm}
 
 \ProcessOptions
 
@@ -209,14 +209,46 @@ BoldItalicFont=texgyreheros-bolditalic.otf
 % Bibliography %
 %%%%%%%%%%%%%%%%
 
-\RequirePackage[backend=biber, style=verbose, maxnames=99, sorting=ydnt]{biblatex}
+\RequirePackage[backend=biber, style=verbose, sorting=ydnt, labelnumber, defernumbers]{biblatex}
 
-\DeclareFieldFormat[article]{title}{#1\par}
-\DeclareFieldFormat[book]{title}{#1\par}
-\DeclareFieldFormat[inproceedings]{title}{#1\par}
-\DeclareFieldFormat[misc]{title}{#1\par}
-\DeclareFieldFormat[report]{title}{#1\par}
+\defbibfilter{articles}{type=article}
+\defbibfilter{books}{type=book}
 
+\makeatletter
+\patchcmd{\blx@printbibliography}
+  {\blx@bibliography\blx@tempa}
+  {\setcounter{bibitemtotal}{0}%
+   \setlength{\labelnumberwidth}{0pt}%
+   \begingroup
+   \def\do##1{\stepcounter{bibitemtotal}}%
+   \dolistloop{\blx@tempa}%
+   \endgroup
+   \blx@setlabwidth{\labelnumberwidth}{%
+     \csuse{abx@ffd@*@labelnumberwidth}{\arabic{bibitemtotal}}}%
+   \blx@bibliography\blx@tempa}{}{}
+\makeatother
+
+\newcounter{bibitemtotal}
+\newrobustcmd*{\mkbibdesc}[1]{%
+  \number\numexpr\value{bibitemtotal}+1-#1\relax}
+\DeclareFieldFormat{labelnumber}{\mkbibdesc{#1}}
+\DeclareFieldFormat{labelnumberwidth}{\mkbibbrackets{#1}}
+
+\defbibenvironment{bibliography}
+  {\list
+     {\printtext[labelnumberwidth]{\printfield{labelnumber}}}
+     {\setlength{\labelwidth}{\labelnumberwidth}%
+      \setlength{\leftmargin}{\labelwidth}%
+      \setlength{\labelsep}{\biblabelsep}%
+      \addtolength{\leftmargin}{\labelsep}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}}%
+      \renewcommand*{\makelabel}[1]{\hss##1}}
+  {\endlist}
+  {\item}
+
+
+% \DeclareFieldFormat[article]{title}{#1\par}
 \DeclareBibliographyDriver{article}{%
   \printfield{title}%
   \newblock%
@@ -237,109 +269,30 @@ BoldItalicFont=texgyreheros-bolditalic.otf
   \par\vspace{0.3\baselineskip}
 }
 
-\DeclareBibliographyDriver{book}{%
-  \printfield{title}%
-  \newblock%
-  \printnames{author}%
-  \par%
-  \newblock%
-  {%
-    \footnotesize\addfontfeature{Color=lightgray}\itshape%
-    \printlist{publisher}%
-    \setunit*{\addcomma\space}%
-    \printfield{note}%
-    \setunit*{\addcomma\space}%
-    \printfield{year}%
-    \setunit{\addcomma\space}%
-    \printlist{location}%
-    \newunit%
-  }
-  \par\vspace{0.3\baselineskip}
+
+\defbibheading{friggeriHeading}[\bibname]{%
+   \section{#1}
+   \markboth{#1}{#1}
 }
-
-
-\DeclareBibliographyDriver{inproceedings}{%
-  \printfield{title}%
-  \newblock%
-  \printnames{author}%
-  \par%
-  \newblock%
-  {%
-    \footnotesize\addfontfeature{Color=lightgray}%
-    \printfield{booktitle}%
-    \setunit{\addcomma\space}%
-    \printfield{year}%
-    \setunit{\addcomma\space}%
-    \printlist{location}%
-    \newunit%
-  }
-  \par\vspace{0.3\baselineskip}
-}
-
-\DeclareBibliographyDriver{misc}{%
-  \printfield{title}%
-  \newblock%
-  \printnames{author}%
-  \par%
-  \newblock%
-  {%
-    \footnotesize\addfontfeature{Color=lightgray}\itshape%
-    \printfield{booktitle}%
-    \setunit*{\addcomma\space}%
-    \printfield{note}%
-    \setunit*{\addcomma\space}%
-    \printfield{year}%
-    \setunit{\addcomma\space}%
-    \printlist{location}%
-    \newunit%
-  }
-  \par\vspace{0.3\baselineskip}
-}
-
-\DeclareBibliographyDriver{report}{%
-  \printfield{title}%
-  \newblock%
-  \printnames{author}%
-  \par%
-  \newblock%
-  {%
-    \footnotesize\addfontfeature{Color=lightgray}\itshape%
-    \printfield{type}%
-    \setunit{\space}%
-    \printfield{number}%
-    \setunit{\addcomma\space}%
-    \printfield{year}%
-    \newunit%
-  }
-  \par\vspace{0.3\baselineskip}
-}
-
-\DeclareNameFormat{author}{%
-  \small\addfontfeature{Color=lightgray}%
-  \ifblank{#3}{}{#3\space}#1%
-  \ifthenelse{\value{listcount}<\value{liststop}}
-    {\addcomma\space}
-    {}%
-}
-
-\defbibheading{bibheading}[\bibname]{%
+\defbibheading{friggeriSubHeading}[\bibname]{%
    \subsubsection*{#1}
    \markboth{#1}{#1}
 }
 
-\newcommand{\printbibsection}[2]{
-  \begin{refsection}
-    \nocite{*}
-    \printbibliography[sorting=chronological, type={#1}, title={#2}, heading=bibheading]
-  \end{refsection}
-}
-
-\DeclareSortingScheme{chronological}{
-  \sort[direction=descending]{\field{year}}
-  \sort[direction=descending]{\field{month}}
-}
-
-
+\DeclareNameFormat{author}{%
+  \small\addfontfeature{Color=lightgray}%
+  \ifgiveninits
+    {\usebibmacro{name:given-family}
+      {\namepartfamily}
+      {\namepartgiveni}
+      {\namepartprefix}
+      {\namepartsuffix}}
+    {\usebibmacro{name:given-family}
+      {\namepartfamily}
+      {\namepartgiven}
+      {\namepartprefix}
+      {\namepartsuffix}}%
+  \usebibmacro{name:andothers}}
 
 %%%%%%%%%%%%%%%%
 % Other tweaks %
