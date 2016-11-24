@@ -1,4 +1,4 @@
-\ProvidesClass{friggeri-cv-a4}[2015/10/22 CV class]
+\ProvidesClass{friggeri-cv}[2015/10/22 CV class]
 \NeedsTeXFormat{LaTeX2e}
 
 \DeclareOption{nocolors}{\def\@cv@nocolors{}}
@@ -10,8 +10,10 @@
 \LoadClass{article}
 
 % set A4 paper format
-% \setlength\paperheight {297mm}
-% \setlength\paperwidth  {210mm}
+\DeclareOption{a4}{
+  \setlength\paperheight {297mm}
+  \setlength\paperwidth  {210mm}
+}
 
 \ProcessOptions
 
@@ -154,9 +156,9 @@ BoldItalicFont=texgyreheros-bolditalic.otf
   \par\vspace{.25\parskip}%
 }
 
-\renewcommand{\subsubsection}[2]{
+\renewcommand{\subsubsection}[1]{
   \par\vspace{.5\parskip}%
-  {\Large\headingfont\color{headercolor} #2}
+  {\large\headingfont\color{headercolor} #1}
   \par\vspace{.25\parskip}%
 }
 
@@ -209,90 +211,47 @@ BoldItalicFont=texgyreheros-bolditalic.otf
 % Bibliography %
 %%%%%%%%%%%%%%%%
 
-\RequirePackage[backend=biber, style=verbose, sorting=ydnt, labelnumber, defernumbers]{biblatex}
+\RequirePackage[sorting=ydnt, style=numeric, defernumbers=true]{biblatex}
 
-\defbibfilter{articles}{type=article}
-\defbibfilter{books}{type=book}
+%%%%
+% this code from http://tex.stackexchange.com/questions/43476/citing-a-certain-type-of-reference-using-biblatex/43522#43522
+%%%% 
+
+\setlength\bibitemsep{0.5\baselineskip}
+\DeclareFieldFormat{labelnumber}{\mkbibdesc{#1}}
 
 \makeatletter
-\patchcmd{\blx@printbibliography}
-  {\blx@bibliography\blx@tempa}
-  {\setcounter{bibitemtotal}{0}%
-   \setlength{\labelnumberwidth}{0pt}%
-   \begingroup
-   \def\do##1{\stepcounter{bibitemtotal}}%
-   \dolistloop{\blx@tempa}%
-   \endgroup
-   \blx@setlabwidth{\labelnumberwidth}{%
-     \csuse{abx@ffd@*@labelnumberwidth}{\arabic{bibitemtotal}}}%
-   \blx@bibliography\blx@tempa}{}{}
+
+% Print labelnumber as actual number, plus item total, minus one
+\newrobustcmd{\mkbibdesc}[1]{%
+  \number\numexpr\csuse{bbx@itemtotal}+1-#1\relax}
+
+% Initialize category counters
+\def\bbx@initcategory#1{\csnumgdef{bbx@count@#1}{0}}
+\forlistloop{\bbx@initcategory}{\blx@categories}
+
+% Increment category counters
+\def\bbx@countcategory#1{%
+  \ifentrytype{#1}
+    {\csnumgdef{bbx@count@#1}{\csuse{bbx@count@#1}+1}%
+     \addtocategory{#1}{\thefield{entrykey}}%
+     \listbreak}
+    {}}
+\AtDataInput{\forlistloop{\bbx@countcategory}{\blx@categories}}
+
+% Modify \bibbycategory to set item total
+\patchcmd{\blx@bibcategory}
+  {\blx@key@heading{#1}}
+  {\blx@key@heading{#1}%
+   \csnumdef{blx@labelnumber@\the\c@refsection}{0}%
+   \csnumgdef{bbx@itemtotal}{\csuse{bbx@count@#1}}}
+  {}{}
+
 \makeatother
 
-\newcounter{bibitemtotal}
-\newrobustcmd*{\mkbibdesc}[1]{%
-  \number\numexpr\value{bibitemtotal}+1-#1\relax}
-\DeclareFieldFormat{labelnumber}{\mkbibdesc{#1}}
-\DeclareFieldFormat{labelnumberwidth}{\mkbibbrackets{#1}}
-
-\defbibenvironment{bibliography}
-  {\list
-     {\printtext[labelnumberwidth]{\printfield{labelnumber}}}
-     {\setlength{\labelwidth}{\labelnumberwidth}%
-      \setlength{\leftmargin}{\labelwidth}%
-      \setlength{\labelsep}{\biblabelsep}%
-      \addtolength{\leftmargin}{\labelsep}%
-      \setlength{\itemsep}{\bibitemsep}%
-      \setlength{\parsep}{\bibparsep}}%
-      \renewcommand*{\makelabel}[1]{\hss##1}}
-  {\endlist}
-  {\item}
-
-
-% \DeclareFieldFormat[article]{title}{#1\par}
-\DeclareBibliographyDriver{article}{%
-  \printfield{title}%
-  \newblock%
-  \printnames{author}%
-  \par%
-  \newblock%
-  {%
-    \footnotesize\addfontfeature{Color=lightgray}\itshape%
-    \usebibmacro{journal+issuetitle}%
-    \setunit{\space}%
-    \printfield{pages}%
-    \newunit%
-    \printlist{publisher}%
-    \setunit*{\addcomma\space}%
-    \printfield{year}%
-    \newunit%
-  }
-  \par\vspace{0.3\baselineskip}
-}
-
-
-\defbibheading{friggeriHeading}[\bibname]{%
-   \section{#1}
-   \markboth{#1}{#1}
-}
-\defbibheading{friggeriSubHeading}[\bibname]{%
-   \subsubsection*{#1}
-   \markboth{#1}{#1}
-}
-
-\DeclareNameFormat{author}{%
-  \small\addfontfeature{Color=lightgray}%
-  \ifgiveninits
-    {\usebibmacro{name:given-family}
-      {\namepartfamily}
-      {\namepartgiveni}
-      {\namepartprefix}
-      {\namepartsuffix}}
-    {\usebibmacro{name:given-family}
-      {\namepartfamily}
-      {\namepartgiven}
-      {\namepartprefix}
-      {\namepartsuffix}}%
-  \usebibmacro{name:andothers}}
+%%%%
+% end stack exchange code
+%%%%
 
 %%%%%%%%%%%%%%%%
 % Other tweaks %

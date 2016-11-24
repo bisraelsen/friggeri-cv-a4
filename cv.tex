@@ -27,9 +27,32 @@
 % Options
 % 'print': remove colors from this template for printing
 % 'nocolor' to disable colors in section headers
-\documentclass[nocolors]{friggeri-cv-a4}
+% 'a4' print a4 instead of letter
+\documentclass[nocolors]{friggeri-cv}
 
 \addbibresource{bibliography.bib} % Specify the bibliography file to include publications
+
+%%%%%
+% bibliography section config
+% place the entry types you want in this document, IN ORDER of how you want them to appear
+%%%%%
+
+% bib categories, in order of appearance
+\DeclareBibliographyCategory{book}
+\DeclareBibliographyCategory{article}
+\DeclareBibliographyCategory{inproceedings}
+\DeclareBibliographyCategory{report}
+
+% defined headings for the categories above
+\defbibheading{bibliography}{\section{publications}} % overall bibliography title
+\defbibheading{book}{\subsubsection{books}}
+\defbibheading{article}{\subsubsection{journal articles}}
+\defbibheading{report}{\subsubsection{reports}}
+\defbibheading{inproceedings}{\subsubsection{presentations}}
+
+%%%%%
+% end bibliography config
+%%%%%
 
 \begin{document}
 
@@ -214,9 +237,7 @@ Worked in the Nerd Herd and helped to solve computer problems by asking customer
 % \section{publications}
 \printbibheading[heading=friggeriHeading,title=publications]
 \nocite{*}
-\printbibliography[filter=articles,title={peer reviewed articles}, heading=friggeriSubHeading] % Print all articles from the bibliography
-
-\printbibliography[filter=books,title={books}, heading=friggeriSubHeading, resetnumbers] % Print all books from the bibliography
+\bibbycategory
 
 %----------------------------------------------------------------------------------------
 
