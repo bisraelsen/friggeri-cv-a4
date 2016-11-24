@@ -15,7 +15,6 @@ In order to compile you need:
 * TikZ,
 * XeTex,
 * fontspec
-* biblatex and
 * textpos
 * biblatex -- I built this with biblatex 3.6 but also removed some of the fancy stuff, so it might build on an older version
 
