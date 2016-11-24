@@ -217,7 +217,7 @@ BoldItalicFont=texgyreheros-bolditalic.otf
 % this code from http://tex.stackexchange.com/questions/43476/citing-a-certain-type-of-reference-using-biblatex/43522#43522
 %%%% 
 
-\setlength\bibitemsep{0.5\baselineskip}
+\setlength\bibitemsep{0.2cm}
 \DeclareFieldFormat{labelnumber}{\mkbibdesc{#1}}
 
 \makeatletter

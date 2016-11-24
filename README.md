@@ -8,6 +8,7 @@ Fork of the ShareLateX version of the [Friggeri CV](https://www.sharelatex.com/t
 
 * `print`: renders in black and white, and reverts the header to dark on light
 * `nocolors`: no colors in section headers (but still use dark header)
+* `a4`: changes format to a4 from letter
 
 In order to compile you need:
 
@@ -16,6 +17,7 @@ In order to compile you need:
 * fontspec
 * biblatex and
 * textpos
+* biblatex -- I built this with biblatex 3.6 but also removed some of the fancy stuff, so it might build on an older version
 
 Keeping the fonts in the root directory makes it so you shouldn't have to install them.
 
