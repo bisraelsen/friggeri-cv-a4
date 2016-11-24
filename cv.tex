@@ -30,21 +30,22 @@
 % 'a4' print a4 instead of letter
 \documentclass[nocolors]{friggeri-cv}
 
-\addbibresource{bibliography.bib} % Specify the bibliography file to include publications
-
 %%%%%
 % bibliography section config
 % place the entry types you want in this document, IN ORDER of how you want them to appear
 %%%%%
+\addbibresource{bibliography.bib} % Specify the bibliography file to include publications
 
-% bib categories, in order of appearance
+% overall bibliography title
+\defbibheading{bibliography}{\section{publications}} 
+
+% bib categories, in order of desired appearance
 \DeclareBibliographyCategory{book}
 \DeclareBibliographyCategory{article}
 \DeclareBibliographyCategory{inproceedings}
 \DeclareBibliographyCategory{report}
 
 % defined headings for the categories above
-\defbibheading{bibliography}{\section{publications}} % overall bibliography title
 \defbibheading{book}{\subsubsection{books}}
 \defbibheading{article}{\subsubsection{journal articles}}
 \defbibheading{report}{\subsubsection{reports}}
@@ -56,7 +57,7 @@
 
 \begin{document}
 
-\header{brett}{smith}{junior business analyst} % Your name and current job title/field
+\header{john}{smith}{junior business analyst} % Your name and current job title/field
 
 %----------------------------------------------------------------------------------------
 % SIDEBAR SECTION

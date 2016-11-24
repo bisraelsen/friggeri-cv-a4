@@ -211,7 +211,7 @@ BoldItalicFont=texgyreheros-bolditalic.otf
 % Bibliography %
 %%%%%%%%%%%%%%%%
 
-\RequirePackage[sorting=ydnt, style=numeric, defernumbers=true]{biblatex}
+\RequirePackage[backend=biber, sorting=ydnt, style=numeric, defernumbers=true,doi=false,isbn=false,url=false]{biblatex}
 
 %%%%
 % this code from http://tex.stackexchange.com/questions/43476/citing-a-certain-type-of-reference-using-biblatex/43522#43522
